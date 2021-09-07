@@ -8,3 +8,23 @@ export type Delegation = {
     reducedTxnHash: string;
     amount: number;
 };
+
+export type Voter = {
+    address: string;
+    power: number;
+};
+
+export type BoardroomVoters = {
+    address: string;
+    firstVoteCast: number;
+    lastVoteCast: number;
+    totalVotesCast: number;
+    protocols: {
+        protocol: string;
+        totalVotesCast: number;
+        lastVoteCast: number;
+        firstVoteCast: number;
+        totalPowerCast: number;
+        lastCastPower: number;
+    }[];
+};

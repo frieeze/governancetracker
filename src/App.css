@@ -1,4 +1,12 @@
+.Root {
+  display: flex;
+  justify-content: center;
+}
+
 .App {
-  text-align: center;
-  width: 100%;
+  width: 60%;
+}
+
+.clickable {
+  cursor: pointer;
 }
