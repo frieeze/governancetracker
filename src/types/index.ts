@@ -1,5 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber";
-
 export type Delegation = {
     delegator: string;
     reducedDelegator: string;
@@ -14,6 +12,7 @@ export type Delegation = {
 export type Voter = {
     address: string;
     power: number;
+    twitter?: TwitterLink
 };
 
 export type BoardroomVoters = {
@@ -32,13 +31,11 @@ export type BoardroomVoters = {
 };
 
 export type TwitterLink = {
-    twitter: {
         timestamp: number;
         tweetID: string;
         handle: string;
-    };
 };
 
 export type SybilList = {
-    [key: string]: TwitterLink;
+    [key: string]: {twitter: TwitterLink};
 };

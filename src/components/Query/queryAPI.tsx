@@ -1,7 +1,7 @@
 import { getContract, firstBlock } from "eth/contracts/uni/uni";
 import { Delegation } from "types";
 import { providers } from "ethers";
-// import { formatEther } from "ethers/lib/utils";
+import { formatEther } from "ethers/lib/utils";
 
 export async function getDelegations(
     address: string,
@@ -64,7 +64,7 @@ export async function getDelegations(
                 blockNumber: to.blockNumber,
                 txnHash: to.transactionHash.toLowerCase(),
                 reducedTxnHash: "",
-                amount: 0,
+                amount: 0.0,
             });
         }
     }
@@ -82,7 +82,10 @@ export async function getDelegations(
             (del) => del.txnHash === d.transactionHash.toLowerCase()
         );
         if (elt !== undefined) {
-            elt.amount += d.args["newBalance"] - d.args["previousBalance"];
+            elt.amount +=
+                parseFloat(formatEther(d.args["newBalance"])) -
+                parseFloat(formatEther(d.args["previousBalance"]));
+
             console.log(d.blockNumber);
             console.log(
                 "previousBalance",
@@ -100,7 +103,10 @@ export async function getDelegations(
                 (del) => del.delegator === transaction.from.toLowerCase()
             );
             if (elt !== undefined) {
-                elt.amount += d.args["newBalance"] - d.args["previousBalance"];
+                elt.amount +=
+                    parseFloat(formatEther(d.args["newBalance"])) -
+                    parseFloat(formatEther(d.args["previousBalance"]));
+
                 console.log(d.blockNumber);
                 console.log(
                     "previousBalance",
@@ -110,19 +116,11 @@ export async function getDelegations(
                     "amount",
                     elt.amount
                 );
-                // parseInt(formatEther(d.args["newBalance"])) -
-                // parseInt(formatEther(d.args["previousBalance"]));
-                //
-                // elt.amount.add(
-                //     BigNumber.from(d.args["newBalance"]).sub(
-                //         BigNumber.from(d.args["previousBalance"])
-                //     )
-                // );
             }
         }
     }
     console.log(delegated);
-    return delegated; // .filter((del) => del.amount >= 0); // del.amount.gt(0));
+    return delegated;
 }
 
 export function reduceString(str: string): string {

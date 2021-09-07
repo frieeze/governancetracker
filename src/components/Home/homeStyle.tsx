@@ -1,4 +1,5 @@
 import { makeStyles, createStyles, Theme } from "@material-ui/core";
+import { lightBlue } from "@material-ui/core/colors";
 
 export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,6 +18,9 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         link: {
             color: theme.palette.common.black,
+        },
+        verifiedIcon: {
+            color: lightBlue[400],
         },
     })
 );

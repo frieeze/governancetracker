@@ -9,14 +9,19 @@ import {
     LinearProgress,
     Typography,
     Box,
-} from '@material-ui/core';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Voter } from 'types';
-import { getTwitterLinks } from './homeAPI';
-import { getUniVoters, selectStatus, selectUniVoters } from './homeSlice';
-import { useStyles } from './homeStyle';
+} from "@material-ui/core";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Voter } from "types";
+import {
+    getUniVoters,
+    selectStatus,
+    selectTwitterFilter,
+    selectUniVoters,
+} from "./homeSlice";
+import { useStyles } from "./homeStyle";
+import CheckIcon from "@material-ui/icons/Check";
 
 interface Column {
     id: string;
@@ -26,8 +31,8 @@ interface Column {
 }
 
 const columns: Column[] = [
-    { id: 'address', label: 'Rank', minWidth: 170 },
-    { id: 'power', label: 'Total Votes', minWidth: 20 },
+    { id: "address", label: "Rank", minWidth: 170 },
+    { id: "power", label: "Total Votes", minWidth: 20 },
 ];
 
 export default function Home() {
@@ -35,20 +40,17 @@ export default function Home() {
 
     const uniVoters = useAppSelector(selectUniVoters);
     const votersStatus = useAppSelector(selectStatus);
+    const verifiedFilter = useAppSelector(selectTwitterFilter);
+
     const dispatch = useAppDispatch();
 
-    const handleClipboard = (text: string) => {
-        navigator.clipboard.writeText(text);
-    };
-
     useEffect(() => {
-        getTwitterLinks().then((data) => console.log(data));
         dispatch(getUniVoters());
     }, [dispatch]);
 
     return (
         <Paper className={classes.root}>
-            {votersStatus === 'idle' ? (
+            {votersStatus === "idle" ? (
                 <TableContainer className={classes.container}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
@@ -64,7 +66,12 @@ export default function Home() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {uniVoters.map((row: Voter, index: number) => {
+                            {(verifiedFilter
+                                ? uniVoters.filter(
+                                      (voter) => voter.twitter !== undefined
+                                  )
+                                : uniVoters
+                            ).map((row: Voter, index: number) => {
                                 return (
                                     <TableRow
                                         hover
@@ -83,7 +90,21 @@ export default function Home() {
                                                     to={`/details/${row.address}`}
                                                     className={classes.link}
                                                 >
-                                                    {row.address}
+                                                    <Box
+                                                        className={classes.row}
+                                                    >
+                                                        <Typography>
+                                                            {row.address}
+                                                        </Typography>
+                                                        {row.twitter !==
+                                                            undefined && (
+                                                            <CheckIcon
+                                                                className={
+                                                                    classes.verifiedIcon
+                                                                }
+                                                            />
+                                                        )}
+                                                    </Box>
                                                 </Link>
                                             </Box>
                                         </TableCell>
