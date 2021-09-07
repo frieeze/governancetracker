@@ -1,7 +1,7 @@
 import { getContract, firstBlock } from "eth/contracts/uni/uni";
 import { Delegation } from "types";
 import { providers } from "ethers";
-import { formatEther } from "ethers/lib/utils";
+// import { formatEther } from "ethers/lib/utils";
 
 export async function getDelegations(
     address: string,
