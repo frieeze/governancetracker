@@ -15,5 +15,8 @@ export const useStyles = makeStyles((theme: Theme) =>
                 margin: theme.spacing(1),
             },
         },
+        link: {
+            color: theme.palette.common.black,
+        },
     })
 );

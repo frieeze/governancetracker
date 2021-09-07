@@ -34,20 +34,25 @@ export async function getDelegations(
 
     let delegated: Delegation[] = [];
     for (let to of toEvents) {
-        if (to.args === undefined) continue;
+        if (
+            to.args === undefined ||
+            (to.args["fromDelegate"] === to.args["toDelegate"] &&
+                to.args["fromDelegate"] !== to.args["delegator"])
+        )
+            continue;
 
         let ok = true;
-        if (to.args["fromDelegate"] !== to.args["toDelegate"]) {
-            for (let from of fromEvents) {
-                if (
-                    from.args !== undefined &&
-                    from.args["delegator"] === to.args["delegator"]
-                ) {
-                    ok = false;
-                    break;
-                }
+        for (let from of fromEvents) {
+            if (
+                from.args !== undefined &&
+                from.args["delegator"] === to.args["delegator"] &&
+                from.args["fromDelegate"] !== from.args["toDelegate"]
+            ) {
+                ok = false;
+                break;
             }
         }
+        // }
         if (ok) {
             delegated.push({
                 delegator: String(to.args["delegator"]).toLowerCase(),
@@ -63,7 +68,6 @@ export async function getDelegations(
             });
         }
     }
-    console.log("allo ?");
 
     const delegatedFilter = await contract.queryFilter(
         contract.filters.DelegateVotesChanged(address),
@@ -79,10 +83,16 @@ export async function getDelegations(
         );
         if (elt !== undefined) {
             elt.amount += d.args["newBalance"] - d.args["previousBalance"];
-            // parseInt(formatEther(d.args["newBalance"])) -
-            // parseInt(formatEther(d.args["previousBalance"]));
+            console.log(d.blockNumber);
+            console.log(
+                "previousBalance",
+                d.args["previousBalance"],
+                "newBalance",
+                d.args["newBalance"],
+                "amount",
+                elt.amount
+            );
         } else {
-            //  if (d.args["newBalance"] < d.args["previousBalance"]) {
             const transaction = await d.getTransaction();
 
             if (transaction === undefined) continue;
@@ -91,6 +101,15 @@ export async function getDelegations(
             );
             if (elt !== undefined) {
                 elt.amount += d.args["newBalance"] - d.args["previousBalance"];
+                console.log(d.blockNumber);
+                console.log(
+                    "previousBalance",
+                    d.args["previousBalance"],
+                    "newBalance",
+                    d.args["newBalance"],
+                    "amount",
+                    elt.amount
+                );
                 // parseInt(formatEther(d.args["newBalance"])) -
                 // parseInt(formatEther(d.args["previousBalance"]));
                 //
@@ -103,7 +122,7 @@ export async function getDelegations(
         }
     }
     console.log(delegated);
-    return delegated.filter((del) => del.amount >= 0); // del.amount.gt(0));
+    return delegated; // .filter((del) => del.amount >= 0); // del.amount.gt(0));
 }
 
 export function reduceString(str: string): string {

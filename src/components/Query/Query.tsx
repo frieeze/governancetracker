@@ -32,27 +32,28 @@ export default function SingleAddress() {
     }, [params, dispatch]);
 
     useEffect(() => {
-        chart(delegation, query);
-    }, [delegation, query]);
+        if (status === "idle") {
+            chart(delegation, query);
+        }
+    }, [status, delegation, query]);
 
     const display = () => {
-        if (status === "idle" && delegation.length !== 0) {
-            return (
-                <Box
-                    id="chartdiv"
-                    className={classNames(classes.root, classes.graph)}
-                ></Box>
-            );
-        }
-        if (status === "loading") {
+        if (status === "loading" && delegation.length === 0) {
             return <LinearProgress />;
         }
         if (status === "failed") {
             return (
-                <Box className={classes.error}>
+                <Box className={classNames(classes.error, classes.vertical)}>
                     <ErrorIcon fontSize="large" />
                     <Typography variant="h5">Oops !</Typography>
                     <Typography>Something went wrong</Typography>
+                </Box>
+            );
+        }
+        if (delegation.length !== 0) {
+            return (
+                <Box className={classNames(classes.root, classes.vertical)}>
+                    <Box id="chartdiv" className={classes.graph}></Box>
                 </Box>
             );
         }
