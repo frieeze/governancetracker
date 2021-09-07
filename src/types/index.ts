@@ -28,3 +28,15 @@ export type BoardroomVoters = {
         lastCastPower: number;
     }[];
 };
+
+export type TwitterLink = {
+    twitter: {
+        timestamp: number;
+        tweetID: string;
+        handle: string;
+    };
+};
+
+export type SybilList = {
+    [key: string]: TwitterLink;
+};

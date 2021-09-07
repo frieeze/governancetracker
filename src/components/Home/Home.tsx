@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "app/hooks";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Voter } from "types";
+import { getTwitterLinks } from "./homeAPI";
 import { getUniVoters, selectStatus, selectUniVoters } from "./homeSlice";
 import { useStyles } from "./homeStyle";
 
@@ -37,6 +38,7 @@ export default function Home() {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
+        getTwitterLinks().then((data) => console.log(data));
         dispatch(getUniVoters());
     }, [dispatch]);
 
