@@ -1,4 +1,4 @@
-import { BoardroomVoters, Voter } from "types";
+import { BoardroomVoters, SybilList, Voter } from "types";
 
 export async function getVoters(protocol: string): Promise<Voter[]> {
     const res = await fetch(
@@ -18,4 +18,11 @@ export async function getVoters(protocol: string): Promise<Voter[]> {
             // return voter;
         })
         .sort((a: Voter, b: Voter) => b.power - a.power);
+}
+
+export async function getTwitterLinks(): Promise<SybilList> {
+    const res = await fetch(
+        "https://raw.githubusercontent.com/Uniswap/sybil-list/master/verified.json"
+    );
+    return await res.json();
 }
